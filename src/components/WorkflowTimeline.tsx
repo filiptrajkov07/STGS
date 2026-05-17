@@ -1,47 +1,105 @@
 import { STAGES, STATUS_LABEL, type AppStatus } from "@/lib/stgs-types";
 import { cn } from "@/lib/utils";
-import { Check } from "lucide-react";
+import { Check, X } from "lucide-react";
 
 export function WorkflowTimeline({ status }: { status: AppStatus }) {
-  const currentIdx = STAGES.indexOf(status === "rejected" ? "draft" : status);
+  const isRejected = status === "rejected";
+  const currentIdx = STAGES.indexOf(isRejected ? "draft" : status);
+
   return (
-    <ol className="flex items-center gap-2 flex-wrap">
+    <div className="relative flex items-start gap-0 w-full">
       {STAGES.map((stage, i) => {
-        const done = i < currentIdx || status === "approved";
-        const current = i === currentIdx && status !== "approved";
+        const done = i < currentIdx || status === "submitted";
+        const current = i === currentIdx && !isRejected && status !== "submitted";
+        const isLast = i === STAGES.length - 1;
+
         return (
-          <li key={stage} className="flex items-center gap-2">
+          <div key={stage} className="flex-1 flex flex-col items-center relative">
+            {/* Connector line before */}
+            {i > 0 && (
+              <div
+                className="absolute top-3.5 right-1/2 w-full h-0.5 -translate-y-1/2"
+                style={{
+                  background: done || current
+                    ? "linear-gradient(90deg, oklch(0.48 0.20 264), oklch(0.48 0.20 264 / 40%))"
+                    : "var(--color-border)",
+                  left: 0,
+                  right: "50%",
+                }}
+              />
+            )}
+
+            {/* Step circle */}
             <div
               className={cn(
-                "h-7 w-7 rounded-full grid place-items-center text-xs font-semibold border",
+                "relative z-10 w-7 h-7 rounded-full flex items-center justify-center text-[0.65rem] font-bold border-2 transition-all duration-300",
+              )}
+              style={
                 done
-                  ? "bg-primary text-primary-foreground border-primary"
+                  ? {
+                      background: "linear-gradient(135deg, oklch(0.48 0.20 264), oklch(0.52 0.20 275))",
+                      borderColor: "oklch(0.48 0.20 264)",
+                      color: "white",
+                      boxShadow: "0 2px 8px oklch(0.48 0.20 264 / 35%)",
+                    }
                   : current
-                    ? "border-primary text-primary"
-                    : "border-muted text-muted-foreground",
-              )}
+                  ? {
+                      background: "white",
+                      borderColor: "oklch(0.48 0.20 264)",
+                      color: "oklch(0.48 0.20 264)",
+                      boxShadow: "0 0 0 3px oklch(0.48 0.20 264 / 15%)",
+                    }
+                  : {
+                      background: "var(--color-muted)",
+                      borderColor: "var(--color-border)",
+                      color: "var(--color-muted-foreground)",
+                    }
+              }
             >
-              {done ? <Check className="h-4 w-4" /> : i + 1}
+              {done ? <Check className="h-3.5 w-3.5" /> : <span>{i + 1}</span>}
             </div>
+
+            {/* Label */}
             <span
-              className={cn(
-                "text-xs",
-                current ? "font-semibold" : "text-muted-foreground",
-              )}
+              className="mt-1.5 text-center leading-tight"
+              style={{
+                fontSize: "0.6rem",
+                fontWeight: current ? 700 : done ? 500 : 400,
+                color: current
+                  ? "oklch(0.48 0.20 264)"
+                  : done
+                  ? "oklch(0.35 0.10 265)"
+                  : "var(--color-muted-foreground)",
+                maxWidth: "4.5rem",
+              }}
             >
               {STATUS_LABEL[stage]}
             </span>
-            {i < STAGES.length - 1 && (
-              <div className="w-6 h-px bg-border mx-1" />
-            )}
-          </li>
+          </div>
         );
       })}
-      {status === "rejected" && (
-        <li className="ml-2 text-xs font-semibold text-destructive">
-          Rejected
-        </li>
+
+      {/* Rejected indicator */}
+      {isRejected && (
+        <div className="flex flex-col items-center ml-2">
+          <div
+            className="w-7 h-7 rounded-full flex items-center justify-center border-2"
+            style={{
+              background: "oklch(0.97 0.06 25)",
+              borderColor: "oklch(0.55 0.23 25)",
+              color: "oklch(0.55 0.23 25)",
+            }}
+          >
+            <X className="h-3.5 w-3.5" />
+          </div>
+          <span
+            className="mt-1.5 text-center font-bold"
+            style={{ fontSize: "0.6rem", color: "oklch(0.55 0.23 25)" }}
+          >
+            Rejected
+          </span>
+        </div>
       )}
-    </ol>
+    </div>
   );
 }

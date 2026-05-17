@@ -14,21 +14,35 @@ import { AppShell } from "@/components/AppShell";
 
 function NotFoundComponent() {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-background px-4">
-      <div className="max-w-md text-center">
-        <h1 className="text-7xl font-bold text-foreground">404</h1>
-        <h2 className="mt-4 text-xl font-semibold text-foreground">Page not found</h2>
-        <p className="mt-2 text-sm text-muted-foreground">
-          The page you're looking for doesn't exist or has been moved.
-        </p>
-        <div className="mt-6">
-          <Link
-            to="/"
-            className="inline-flex items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
-          >
-            Go home
-          </Link>
+    <div className="flex min-h-screen items-center justify-center px-4" style={{ background: "var(--color-background)" }}>
+      <div className="max-w-sm text-center space-y-4">
+        <div
+          className="w-20 h-20 rounded-3xl flex items-center justify-center mx-auto text-3xl font-black text-white"
+          style={{
+            background: "linear-gradient(135deg, oklch(0.48 0.20 264), oklch(0.52 0.20 275))",
+            boxShadow: "0 8px 24px oklch(0.48 0.20 264 / 30%)",
+          }}
+        >
+          404
         </div>
+        <div>
+          <h2 className="text-xl font-bold" style={{ color: "var(--color-foreground)" }}>
+            Page not found
+          </h2>
+          <p className="mt-1 text-sm" style={{ color: "var(--color-muted-foreground)" }}>
+            The page you're looking for doesn't exist or has been moved.
+          </p>
+        </div>
+        <Link
+          to="/"
+          className="inline-flex items-center justify-center px-5 py-2.5 rounded-xl text-sm font-semibold text-white transition-opacity hover:opacity-90"
+          style={{
+            background: "linear-gradient(135deg, oklch(0.48 0.20 264), oklch(0.52 0.20 275))",
+            boxShadow: "0 2px 12px oklch(0.48 0.20 264 / 30%)",
+          }}
+        >
+          Return home
+        </Link>
       </div>
     </div>
   );
@@ -74,11 +88,10 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Lovable App" },
-      { name: "description", content: "Lovable Generated Project" },
-      { name: "author", content: "Lovable" },
-      { property: "og:title", content: "Lovable App" },
-      { property: "og:description", content: "Lovable Generated Project" },
+      { title: "Scientific Travel Grant System — FINKI" },
+      { name: "description", content: "STGS — Manage and track scientific travel grant applications through the HR and Dean approval workflow." },
+      { property: "og:title", content: "Scientific Travel Grant System" },
+      { property: "og:description", content: "STGS — FINKI travel grant management platform." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
       { name: "twitter:site", content: "@Lovable" },

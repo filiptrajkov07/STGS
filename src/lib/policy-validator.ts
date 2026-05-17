@@ -53,12 +53,7 @@ function isFlightClassAllowed(
   requested: FlightClass,
   allowed: FlightClass,
 ): boolean {
-  const hierarchy: FlightClass[] = [
-    "Economy",
-    "Premium Economy",
-    "Business",
-    "First Class",
-  ];
+  const hierarchy: FlightClass[] = ["Economy", "Business", "First Class"];
 
   const requestedIndex = hierarchy.indexOf(requested);
   const allowedIndex = hierarchy.indexOf(allowed);

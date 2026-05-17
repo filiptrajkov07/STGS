@@ -5,13 +5,10 @@ export type AppStatus =
   | "pending_hr"
   | "pending_dean"
   | "approved"
+  | "submitted"
   | "rejected";
 
-export type FlightClass =
-  | "Economy"
-  | "Premium Economy"
-  | "Business"
-  | "First Class";
+export type FlightClass = "Economy" | "Business" | "First Class";
 
 export interface PolicyOverrides {
   maxHotelStars?: number;
@@ -84,6 +81,7 @@ export const STATUS_LABEL: Record<AppStatus, string> = {
   pending_hr: "Pending HR Review",
   pending_dean: "Pending Dean Approval",
   approved: "Approved",
+  submitted: "Submitted",
   rejected: "Rejected",
 };
 
@@ -92,4 +90,5 @@ export const STAGES: AppStatus[] = [
   "pending_hr",
   "pending_dean",
   "approved",
+  "submitted",
 ];

@@ -72,9 +72,11 @@ interface StgsContextValue extends StgsState {
   ) => Application;
   hrApprove: (appId: string, overrides: Application["overrides"]) => void;
   hrReject: (appId: string, reason: string) => void;
+  hrReopen: (appId: string) => void;
   deanApprove: (appId: string) => void;
   deanReject: (appId: string, reason: string) => void;
   finalizeReceipts: (appId: string) => void;
+  markTravelComplete: (appId: string) => void;
   addReceipt: (
     data: Omit<Receipt, "id" | "createdAt">,
   ) => { ok: true; receipt: Receipt } | { ok: false; reason: "duplicate" };
@@ -222,6 +224,27 @@ export function StgsProvider({ children }: { children: React.ReactNode }) {
           return addEvent(next, appId, "hr", "HR rejected", reason);
         });
       },
+      hrReopen: (appId) => {
+        setState((s) => {
+          const app = s.applications.find((a) => a.id === appId);
+          if (!app || app.status !== "rejected") return s;
+          const next = {
+            ...s,
+            applications: s.applications.map((a) =>
+              a.id === appId
+                ? { ...a, status: "pending_hr" as const, rejectionReason: undefined }
+                : a,
+            ),
+          };
+          return addEvent(
+            next,
+            appId,
+            "hr",
+            "Application reopened",
+            "HR has reopened the application for re-review.",
+          );
+        });
+      },
       deanApprove: (appId) => {
         setState((s) => {
           const next = {
@@ -246,12 +269,29 @@ export function StgsProvider({ children }: { children: React.ReactNode }) {
           return addEvent(next, appId, "dean", "Dean rejected", reason);
         });
       },
+      markTravelComplete: (appId) => {
+        setState((s) => {
+          const next = {
+            ...s,
+            applications: s.applications.map((a) =>
+              a.id === appId ? { ...a, deanApprovedAt: now() } : a,
+            ),
+          };
+          return addEvent(
+            next,
+            appId,
+            "academic",
+            "Travel marked as completed",
+            "48-hour receipt submission window has started.",
+          );
+        });
+      },
       finalizeReceipts: (appId) => {
         setState((s) => {
           const next = {
             ...s,
             applications: s.applications.map((a) =>
-              a.id === appId ? { ...a, receiptsSubmittedAt: now() } : a,
+              a.id === appId ? { ...a, status: "submitted" as const, receiptsSubmittedAt: now() } : a,
             ),
           };
           return addEvent(
